@@ -7,9 +7,9 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
-import frc.robot.LimelightHelpers.LimelightResults;
+/*import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.LimelightHelpers.PoseEstimate;
-import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.VecBuilder;*/
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -39,8 +39,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class LimelightHelpers {
 
-    LimelightResults llresults = LimelightHelpers.getLatestResults("limelight");
-    int numAprilTags = llresults.targets_Fiducials.length;
+    LimelightResults results = LimelightHelpers.getLatestResults("limelight");
+    int numAprilTags = results.targets_Fiducials.length;
 
     
     // Basic targeting data
