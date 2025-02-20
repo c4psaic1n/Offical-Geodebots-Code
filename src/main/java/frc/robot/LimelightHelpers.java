@@ -9,6 +9,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
 import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.LimelightHelpers.PoseEstimate;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -37,8 +38,21 @@ import java.util.concurrent.ConcurrentHashMap;
  * This library supports all Limelight features including AprilTag tracking, Neural Networks, and standard color/retroreflective tracking.
  */
 public class LimelightHelpers {
+
     LimelightResults llresults = LimelightHelpers.getLatestResults("limelight");
-    int numAprilTags = llresults.results.targets_Fiducials.length;
+    int numAprilTags = llresults.targets_Fiducials.length;
+
+    
+    // Basic targeting data
+double tx = LimelightHelpers.getTX("limelight");  // Horizontal offset from crosshair to target in degrees
+double ty = LimelightHelpers.getTY("limelight");  // Vertical offset from crosshair to target in degrees
+double ta = LimelightHelpers.getTA("limelight");  // Target area (0% to 100% of image)
+boolean hasTarget = LimelightHelpers.getTV("limelight"); // Do you have a valid target?
+
+double txnc = LimelightHelpers.getTXNC("limelight");  // Horizontal offset from principal pixel/point to target in degrees
+double tync = LimelightHelpers.getTYNC("limelight");  // Vertical  offset from principal pixel/point to target in degrees
+
+
 
     private static final Map<String, DoubleArrayEntry> doubleArrayEntries = new ConcurrentHashMap<>();
     
