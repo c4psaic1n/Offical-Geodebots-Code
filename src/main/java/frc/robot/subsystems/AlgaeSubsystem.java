@@ -1,4 +1,4 @@
-/* 
+
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -82,8 +82,8 @@ public class AlgaeSubsystem extends SubsystemBase {
               Units.radiansToDegrees(SimulationRobotConstants.kIntakeBarAngleRads)));
 
   public AlgaeSubsystem() {
-    /*
-     * Apply the configuration to the SPARKs.
+    
+     /* Apply the configuration to the SPARKs.
      *
      * kResetSafeParameters is used to get the SPARK to a known state. This
      * is useful in case the SPARK is replaced.
@@ -91,7 +91,7 @@ public class AlgaeSubsystem extends SubsystemBase {
      * kPersistParameters is used to ensure the configuration is not lost when
      * the SPARK loses power. This is useful for power cycles that may occur
      * mid-operation.
-     *
+     */
     intakeMotor.configure(
         Configs.AlgaeSubsystem.intakeConfig,
         ResetMode.kResetSafeParameters,
@@ -111,7 +111,7 @@ public class AlgaeSubsystem extends SubsystemBase {
     armMotorSim = new SparkFlexSim(armMotor, armMotorModel);
   }
 
-  /** Zero the arm encoder when the user button is pressed on the roboRIO *
+  // Zero the arm encoder when the user button is pressed on the roboRIO *
   private void zeroOnUserButton() {
     if (!wasReset && RobotController.getUserButton()) {
       // Zero the encoder only when button switches from "unpressed" to "pressed" to prevent
@@ -128,7 +128,8 @@ public class AlgaeSubsystem extends SubsystemBase {
    * motor at its "forward" power to intake the ball.
    *
    * <p>This will also update the idle state to hold onto the ball when this command is not running.
-   *
+   */
+
   public Command runIntakeCommand() {
     return this.run(
         () -> {
@@ -143,7 +144,7 @@ public class AlgaeSubsystem extends SubsystemBase {
    * run the motor at its "reverse" power to eject the ball.
    *
    * <p>This will also update the idle state to stow the arm when this command is not running.
-   *
+   */
   public Command reverseIntakeCommand() {
     return this.run(
         () -> {
@@ -153,7 +154,8 @@ public class AlgaeSubsystem extends SubsystemBase {
         });
   }
 
-  /** Command to force the subsystem into its "stow" state. *
+  // Command to force the subsystem into its "stow" state. 
+
   public Command stowCommand() {
     return this.runOnce(
         () -> {
@@ -166,7 +168,8 @@ public class AlgaeSubsystem extends SubsystemBase {
    * will stay in the "hold" position and run the motor at its "hold" power to hold onto the ball.
    * When in the "stow" state, the intake will stow the arm in the "stow" position and stop the
    * motor.
-   *
+   */
+
   public Command idleCommand() {
     return this.run(
         () -> {
@@ -180,12 +183,14 @@ public class AlgaeSubsystem extends SubsystemBase {
         });
   }
 
-  /** Set the intake motor power in the range of [-1, 1]. *
+  /** Set the intake motor power in the range of [-1, 1]. */
+
   private void setIntakePower(double power) {
     intakeMotor.set(power);
   }
 
-  /** Set the arm motor position. This will use closed loop position control. *
+  /** Set the arm motor position. This will use closed loop position control. */
+
   private void setIntakePosition(double position) {
     armController.setReference(position, ControlType.kPosition);
   }
@@ -205,7 +210,7 @@ public class AlgaeSubsystem extends SubsystemBase {
                 armEncoder.getPosition() / SimulationRobotConstants.kIntakeReduction));
   }
 
-  /** Get the current drawn by each simulation physics model *
+  /** Get the current drawn by each simulation physics model */
   public double getSimulationCurrentDraw() {
     return m_intakeSim.getCurrentDrawAmps();
   }
@@ -228,4 +233,3 @@ public class AlgaeSubsystem extends SubsystemBase {
     // SimBattery is updated in Robot.java
   }
 }
-*/

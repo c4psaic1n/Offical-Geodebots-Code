@@ -1,4 +1,4 @@
-/** package frc.robot.subsystems;
+package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkFlexSim;
@@ -30,7 +30,7 @@ import frc.robot.Constants.CoralSubsystemConstants.IntakeSetpoints;
 import frc.robot.Constants.SimulationRobotConstants;
 
 public class CoralSubsystem extends SubsystemBase {
-  // Subsystem-wide setpoints
+   //Subsystem-wide setpoints
   public enum Setpoint {
     kFeederStation,
     kLevel1,
@@ -48,12 +48,12 @@ public class CoralSubsystem extends SubsystemBase {
 
   // Initialize elevator SPARK. We will use MAXMotion position control for the elevator, so we also
   // need to initialize the closed loop controller and encoder.
-  private SparkFlex elevatorMotor =
+ /* private SparkFlex elevatorMotor =
       new SparkFlex(CoralSubsystemConstants.kElevatorMotorCanId, MotorType.kBrushless);
   private SparkClosedLoopController elevatorClosedLoopController =
       elevatorMotor.getClosedLoopController();
   private RelativeEncoder elevatorEncoder = elevatorMotor.getEncoder();
-
+ */
   // Initialize intake SPARK. We will use open loop control for this so we don't need a closed loop
   // controller like above.
   private SparkMax intakeMotor =
@@ -116,8 +116,8 @@ public class CoralSubsystem extends SubsystemBase {
               180 - Units.radiansToDegrees(SimulationRobotConstants.kMinAngleRads) - 90));
 
   public CoralSubsystem() {
-    /*
-     * Apply the appropriate configurations to the SPARKs.
+   
+      /* Apply the appropriate configurations to the SPARKs.
      *
      * kResetSafeParameters is used to get the SPARK to a known state. This
      * is useful in case the SPARK is replaced.
@@ -125,7 +125,7 @@ public class CoralSubsystem extends SubsystemBase {
      * kPersistParameters is used to ensure the configuration is not lost when
      * the SPARK loses power. This is useful for power cycles that may occur
      * mid-operation.
-     
+     */
     armMotor.configure(
         Configs.CoralSubsystem.armConfig,
         ResetMode.kResetSafeParameters,
@@ -156,14 +156,15 @@ public class CoralSubsystem extends SubsystemBase {
    * Drive the arm and elevator motors to their respective setpoints. This will use MAXMotion
    * position control which will allow for a smooth acceleration and deceleration to the mechanisms'
    * setpoints.
-   
+   */
   private void moveToSetpoint() {
     armController.setReference(armCurrentTarget, ControlType.kMAXMotionPositionControl);
     elevatorClosedLoopController.setReference(
         elevatorCurrentTarget, ControlType.kMAXMotionPositionControl);
   }
 
-  /** Zero the elevator encoder when the limit switch is pressed. 
+  // Zero the elevator encoder when the limit switch is pressed. 
+
   private void zeroElevatorOnLimitSwitch() {
     if (!wasResetByLimit && elevatorMotor.getReverseLimitSwitch().isPressed()) {
       // Zero the encoder only when the limit switch is switches from "unpressed" to "pressed" to
@@ -175,7 +176,8 @@ public class CoralSubsystem extends SubsystemBase {
     }
   }
 
-  /** Zero the arm and elevator encoders when the user button is pressed on the roboRIO. *
+  // Zero the arm and elevator encoders when the user button is pressed on the roboRIO. *
+   
   private void zeroOnUserButton() {
     if (!wasResetByButton && RobotController.getUserButton()) {
       // Zero the encoders only when button switches from "unpressed" to "pressed" to prevent
@@ -188,7 +190,7 @@ public class CoralSubsystem extends SubsystemBase {
     }
   }
 
-  /** Set the intake motor power in the range of [-1, 1]. 
+  // Set the intake motor power in the range of [-1, 1]. 
   private void setIntakePower(double power) {
     intakeMotor.set(power);
   }
@@ -196,7 +198,7 @@ public class CoralSubsystem extends SubsystemBase {
   /**
    * Command to set the subsystem setpoint. This will set the arm and elevator to their predefined
    * positions for the given setpoint.
-   
+   */
   public Command setSetpointCommand(Setpoint setpoint) {
     return this.runOnce(
         () -> {
@@ -228,7 +230,8 @@ public class CoralSubsystem extends SubsystemBase {
   /**
    * Command to run the intake motor. When the command is interrupted, e.g. the button is released,
    * the motor will stop.
-   
+   */
+
   public Command runIntakeCommand() {
     return this.startEnd(
         () -> this.setIntakePower(IntakeSetpoints.kForward), () -> this.setIntakePower(0.0));
@@ -237,7 +240,7 @@ public class CoralSubsystem extends SubsystemBase {
   /**
    * Command to reverses the intake motor. When the command is interrupted, e.g. the button is
    * released, the motor will stop.
-   *
+   */
   public Command reverseIntakeCommand() {
     return this.startEnd(
         () -> this.setIntakePower(IntakeSetpoints.kReverse), () -> this.setIntakePower(0.0));
@@ -272,7 +275,8 @@ public class CoralSubsystem extends SubsystemBase {
         );
   }
 
-  /** Get the current drawn by each simulation physics model *
+  /** Get the current drawn by each simulation physics model */
+
   public double getSimulationCurrentDraw() {
     return m_elevatorSim.getCurrentDrawAmps() + m_armSim.getCurrentDrawAmps();
   }
@@ -308,4 +312,3 @@ public class CoralSubsystem extends SubsystemBase {
     // SimBattery is updated in Robot.java
   }
 }
-**/

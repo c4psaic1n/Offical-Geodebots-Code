@@ -23,9 +23,9 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static final class CoralSubsystemConstants {
-    /* public static final int kElevatorMotorCanId = 4;
-    public static final int kArmMotorCanId = 3;
-    public static final int kIntakeMotorCanId = 2;
+    // public static final int kElevatorMotorCanId = 4;
+    public static final int kArmMotorCanId = 14;
+    public static final int kIntakeMotorCanId = 15;
     
 
     public static final class ElevatorSetpoints {
@@ -51,8 +51,8 @@ public final class Constants {
   }
 
   public static final class AlgaeSubsystemConstants {
-    public static final int kIntakeMotorCanId = 13;
-    public static final int kPivotMotorCanId = 14;
+    public static final int kIntakeMotorCanId = 14;
+    public static final int kPivotMotorCanId = 12;
 
     public static final class ArmSetpoints {
       public static final double kStow = 18.5;
@@ -65,7 +65,7 @@ public final class Constants {
       public static final double kReverse = -0.5;
       public static final double kHold = 0.25;
     }
-     */
+     
   }
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
@@ -144,7 +144,7 @@ public final class Constants {
 
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
-    /* 
+    
   }
   public static final class SimulationRobotConstants {
     public static final double kPixelsPerMeter = 20;
@@ -171,7 +171,7 @@ public final class Constants {
     public static final double kIntakeShortBarLength = 0.1524;
     public static final double kIntakeLongBarLength = 0.3048;
     public static final double kIntakeBarAngleRads = Units.degreesToRadians(-60);
-    */
+    
   }
   
 }
