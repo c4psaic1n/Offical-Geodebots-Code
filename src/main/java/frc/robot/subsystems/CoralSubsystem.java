@@ -48,12 +48,12 @@ public class CoralSubsystem extends SubsystemBase {
 
   // Initialize elevator SPARK. We will use MAXMotion position control for the elevator, so we also
   // need to initialize the closed loop controller and encoder.
- /* private SparkFlex elevatorMotor =
+  private SparkFlex elevatorMotor =
       new SparkFlex(CoralSubsystemConstants.kElevatorMotorCanId, MotorType.kBrushless);
   private SparkClosedLoopController elevatorClosedLoopController =
       elevatorMotor.getClosedLoopController();
   private RelativeEncoder elevatorEncoder = elevatorMotor.getEncoder();
- */
+ 
   // Initialize intake SPARK. We will use open loop control for this so we don't need a closed loop
   // controller like above.
   private SparkMax intakeMotor =
