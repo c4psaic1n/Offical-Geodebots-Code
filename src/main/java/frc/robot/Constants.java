@@ -51,7 +51,7 @@ public final class Constants {
   }
 
   public static final class AlgaeSubsystemConstants {
-    public static final int kIntakeMotorCanId = 14;
+    public static final int kIntakeMotorCanId = 13;
     public static final int kPivotMotorCanId = 12;
 
     public static final class ArmSetpoints {
@@ -85,10 +85,11 @@ public final class Constants {
         new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
     // Angular offsets of the modules relative to the chassis in radians
-    public static final double kFrontLeftChassisAngularOffset =4.6944614;
-    public static final double kFrontRightChassisAngularOffset = .2793963;
-    public static final double kBackLeftChassisAngularOffset = .298254;
-    public static final double kBackRightChassisAngularOffset =4.7707092;
+    // if wheels do no align properly, just set offset wheels to just ZERO! straight "0"!!!!
+    public static final double kFrontLeftChassisAngularOffset = 0;
+    public static final double kFrontRightChassisAngularOffset =0.1228801;
+    public static final double kBackLeftChassisAngularOffset = 0;
+    public static final double kBackRightChassisAngularOffset =0.1087302;
 
     // SPARK MAX CAN IDs
     public static final int kFrontLeftDrivingCanId = 2;
@@ -125,10 +126,11 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
     public static final double kDriveDeadband = 0.05;
     public static final int kOperatorControllerPort= 1;
+    public static final double kTriggerButtonThreshold = 0.2;
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = .5;
+    public static final double kMaxSpeedMetersPerSecond = 1;
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
