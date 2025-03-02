@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -22,12 +24,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
-
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
+
+
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -41,13 +43,15 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final CoralSubsystem m_coralSubSystem = new CoralSubsystem();
   private final AlgaeSubsystem m_algaeSubsystem = new AlgaeSubsystem();
-
+  
 
   // The driver's controller
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
   //Operator controller
   XboxController m_operatorController = new XboxController(OIConstants.kOperatorControllerPort); 
-/* Button values are;
+
+
+  /* Button values are;
  * A = 1
  * B = 2
  * X = 3
@@ -63,7 +67,7 @@ public class RobotContainer {
     configureButtonBindings();
     //button configurations CAN change i just dont know what to put for it sooo
 
- 
+
 
 //CHANGE TO CHIEF DELPHI SUGGESTION !!!!!!!!!!!!!!
     //algae controls
@@ -82,6 +86,21 @@ new JoystickButton(m_operatorController, 4) // "Y" button
     .whileTrue(m_coralSubSystem.reverseIntakeCommand()); // Runs the intake in reverse
 
 
+    // Elevator controls
+    new JoystickButton(m_operatorController, 5) // Left bumper
+        .whileTrue(m_coralSubSystem.setSetpointCommand(CoralSubsystem.Setpoint.kLevel1)); // Move to Level 1
+
+    new JoystickButton(m_operatorController, 6) // Right bumper
+        .whileTrue(m_coralSubSystem.setSetpointCommand(CoralSubsystem.Setpoint.kLevel2)); // Move to Level 2
+
+    new JoystickButton(m_operatorController, 7) // Back button
+        .whileTrue(m_coralSubSystem.setSetpointCommand(CoralSubsystem.Setpoint.kLevel3)); // Move to Level 3
+
+        new JoystickButton(m_operatorController, 8) // Start button
+        .whileTrue(m_coralSubSystem.setSetpointCommand(CoralSubsystem.Setpoint.kLevel4)); // Move to Level 4
+
+
+        
     // Configure default commands
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
@@ -95,7 +114,7 @@ new JoystickButton(m_operatorController, 4) // "Y" button
             m_robotDrive));
 
             // Set the ball intake to in/out when not running based on internal state
-            //m_algaeSubsystem.setDefaultCommand(m_algaeSubsystem.idleCommand());
+            m_algaeSubsystem.setDefaultCommand(m_algaeSubsystem.idleCommand());
   }
 
   /**
@@ -108,6 +127,7 @@ new JoystickButton(m_operatorController, 4) // "Y" button
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
+
     m_driverController.y().onTrue(getAutonomousCommand());
             
             
