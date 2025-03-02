@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -21,6 +22,9 @@ import edu.wpi.first.math.util.Units;
  * wherever the
  * constants are needed, to reduce verbosity.
  */
+
+
+
 public final class Constants {
   public static final class CoralSubsystemConstants {
     public static final int kElevatorMotorCanId = 10;
@@ -55,15 +59,15 @@ public final class Constants {
     public static final int kPivotMotorCanId = 12;
 
     public static final class ArmSetpoints {
-      public static final double kStow = 18.5;
-      public static final double kHold = 11.5;
+      public static final double kStow = 12.5; //18.5 is original
+      public static final double kHold = 6.5; //11..5
       public static final double kDown = 0;
     }
 
     public static final class IntakeSetpoints {
-      public static final double kForward = 0.5;
-      public static final double kReverse = -0.5;
-      public static final double kHold = 0.25;
+      public static final double kForward = 1;//.5
+      public static final double kReverse = -1;//.5
+      public static final double kHold = 0.50;//.25
     }
      
   }
@@ -85,11 +89,10 @@ public final class Constants {
         new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
     // Angular offsets of the modules relative to the chassis in radians
-    // if wheels do no align properly, just set offset wheels to just ZERO! straight "0"!!!!
-    public static final double kFrontLeftChassisAngularOffset = 0;
-    public static final double kFrontRightChassisAngularOffset =0.1228801;
-    public static final double kBackLeftChassisAngularOffset = 0;
-    public static final double kBackRightChassisAngularOffset =0.1087302;
+    public static final double kFrontLeftChassisAngularOffset =4.6944614;
+    public static final double kFrontRightChassisAngularOffset = .2793963;
+    public static final double kBackLeftChassisAngularOffset = .298254;
+    public static final double kBackRightChassisAngularOffset =4.7707092;
 
     // SPARK MAX CAN IDs
     public static final int kFrontLeftDrivingCanId = 2;
@@ -126,11 +129,10 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
     public static final double kDriveDeadband = 0.05;
     public static final int kOperatorControllerPort= 1;
-    public static final double kTriggerButtonThreshold = 0.2;
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 1;
+    public static final double kMaxSpeedMetersPerSecond = .5;
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
