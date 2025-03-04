@@ -55,7 +55,7 @@ public final class Constants {
   }
 
   public static final class AlgaeSubsystemConstants {
-    public static final int kIntakeMotorCanId = 13;
+   /*  public static final int kIntakeMotorCanId = 13;
     public static final int kPivotMotorCanId = 12;
 
     public static final class ArmSetpoints {
@@ -68,7 +68,7 @@ public final class Constants {
       public static final double kForward = 1;//.5
       public static final double kReverse = -1;//.5
       public static final double kHold = 0.50;//.25
-    }
+    }*/
      
   }
   public static final class DriveConstants {
