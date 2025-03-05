@@ -195,6 +195,7 @@ public class CoralSubsystem extends SubsystemBase {
     intakeMotor.set(power);
   }
 
+  
   /**
    * Command to set the subsystem setpoint. This will set the arm and elevator to their predefined
    * positions for the given setpoint.

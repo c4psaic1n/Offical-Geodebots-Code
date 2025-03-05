@@ -120,6 +120,14 @@ public class AlgaeSubsystem extends SubsystemBase {
     }
   }
 
+
+  /** Set the intake motor power in the range of [-1, 1]. */
+  private void setIntakePower(double power) {
+    intakeMotor.set(.5);
+  }
+  
+
+
   /**
    * Command to run the algae intake. This will extend the arm to its "down" position and run the
    * motor at its "forward" power to intake the ball.
@@ -178,24 +186,21 @@ public class AlgaeSubsystem extends SubsystemBase {
 
   private void updateIntakeState() {
     if (isRunningIntake) {
-      setIntakePower(AlgaeSubsystemConstants.IntakeSetpoints.kForward);
+      setIntakePower(1);//AlgaeSubsystemConstants.IntakeSetpoints.kForward
       setIntakePosition(AlgaeSubsystemConstants.ArmSetpoints.kDown);
     } else if (isReversingIntake) {
-      setIntakePower(AlgaeSubsystemConstants.IntakeSetpoints.kReverse);
+      setIntakePower(-1);//AlgaeSubsystemConstants.IntakeSetpoints.kReverse
       setIntakePosition(AlgaeSubsystemConstants.ArmSetpoints.kHold);
     } else if (stowWhenIdle) {
       setIntakePower(0.0);
-      setIntakePosition(AlgaeSubsystemConstants.ArmSetpoints.kStow);
+      setIntakePosition(AlgaeSubsystemConstants.ArmSetpoints.kStow);//AlgaeSubsystemConstants.ArmSetpoints.kStow
     } else {
-      setIntakePower(AlgaeSubsystemConstants.IntakeSetpoints.kHold);
-      setIntakePosition(AlgaeSubsystemConstants.ArmSetpoints.kHold);
+      setIntakePower(.5);//AlgaeSubsystemConstants.IntakeSetpoints.kHold
+      setIntakePosition(AlgaeSubsystemConstants.ArmSetpoints.kHold);//AlgaeSubsystemConstants.ArmSetpoints.kHold
     }
   }
 
-  /** Set the intake motor power in the range of [-1, 1]. */
-  private void setIntakePower(double power) {
-    intakeMotor.set(power);
-  }
+  
 
   /** Set the arm motor position. This will use closed loop position control. */
   private void setIntakePosition(double position) {
