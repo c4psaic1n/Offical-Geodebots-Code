@@ -1,8 +1,3 @@
-
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
@@ -27,9 +22,6 @@ import frc.robot.Configs;
 import frc.robot.Constants.AlgaeSubsystemConstants;
 import frc.robot.Constants.SimulationRobotConstants;
 
-
-
-
 public class AlgaeSubsystem extends SubsystemBase {
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so we also need to
   // initialize the closed loop controller and encoder.
@@ -46,6 +38,8 @@ public class AlgaeSubsystem extends SubsystemBase {
   // Member variables for subsystem state management
   private boolean stowWhenIdle = true;
   private boolean wasReset = false;
+  private boolean isRunningIntake = false;
+  private boolean isReversingIntake = false;
 
   // Simulation setup and variables
   private DCMotor armMotorModel = DCMotor.getNeoVortex(1);
@@ -132,13 +126,13 @@ public class AlgaeSubsystem extends SubsystemBase {
    *
    * <p>This will also update the idle state to hold onto the ball when this command is not running.
    */
-
   public Command runIntakeCommand() {
     return this.run(
         () -> {
           stowWhenIdle = false;
-          setIntakePower(AlgaeSubsystemConstants.IntakeSetpoints.kForward);
-          setIntakePosition(AlgaeSubsystemConstants.ArmSetpoints.kDown);
+          isRunningIntake = true;
+          isReversingIntake = false;
+          updateIntakeState();
         });
   }
 
@@ -152,17 +146,20 @@ public class AlgaeSubsystem extends SubsystemBase {
     return this.run(
         () -> {
           stowWhenIdle = true;
-          setIntakePower(AlgaeSubsystemConstants.IntakeSetpoints.kReverse);
-          setIntakePosition(AlgaeSubsystemConstants.ArmSetpoints.kHold);
+          isRunningIntake = false;
+          isReversingIntake = true;
+          updateIntakeState();
         });
   }
 
   // Command to force the subsystem into its "stow" state. 
-
   public Command stowCommand() {
     return this.runOnce(
         () -> {
           stowWhenIdle = true;
+          isRunningIntake = false;
+          isReversingIntake = false;
+          updateIntakeState();
         });
   }
 
@@ -172,28 +169,35 @@ public class AlgaeSubsystem extends SubsystemBase {
    * When in the "stow" state, the intake will stow the arm in the "stow" position and stop the
    * motor.
    */
-
   public Command idleCommand() {
     return this.run(
         () -> {
-          if (stowWhenIdle) {
-            setIntakePower(0.0);
-            setIntakePosition(AlgaeSubsystemConstants.ArmSetpoints.kStow);
-          } else {
-            setIntakePower(AlgaeSubsystemConstants.IntakeSetpoints.kHold);
-            setIntakePosition(AlgaeSubsystemConstants.ArmSetpoints.kHold);
-          }
+          updateIntakeState();
         });
   }
 
-  /** Set the intake motor power in the range of [-1, 1]. */
+  private void updateIntakeState() {
+    if (isRunningIntake) {
+      setIntakePower(AlgaeSubsystemConstants.IntakeSetpoints.kForward);
+      setIntakePosition(AlgaeSubsystemConstants.ArmSetpoints.kDown);
+    } else if (isReversingIntake) {
+      setIntakePower(AlgaeSubsystemConstants.IntakeSetpoints.kReverse);
+      setIntakePosition(AlgaeSubsystemConstants.ArmSetpoints.kHold);
+    } else if (stowWhenIdle) {
+      setIntakePower(0.0);
+      setIntakePosition(AlgaeSubsystemConstants.ArmSetpoints.kStow);
+    } else {
+      setIntakePower(AlgaeSubsystemConstants.IntakeSetpoints.kHold);
+      setIntakePosition(AlgaeSubsystemConstants.ArmSetpoints.kHold);
+    }
+  }
 
+  /** Set the intake motor power in the range of [-1, 1]. */
   private void setIntakePower(double power) {
     intakeMotor.set(power);
   }
 
   /** Set the arm motor position. This will use closed loop position control. */
-
   private void setIntakePosition(double position) {
     armController.setReference(position, ControlType.kPosition);
   }
