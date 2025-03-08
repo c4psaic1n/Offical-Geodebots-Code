@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import java.util.List;
 
 
@@ -74,33 +75,35 @@ public class RobotContainer {
     new JoystickButton(m_operatorController, 1) // "A" button
     .whileTrue(m_algaeSubsystem.runIntakeCommand()); // Runs the intake forward
 
-new JoystickButton(m_operatorController, 2) // "B" button
+    new JoystickButton(m_operatorController, 2) // "B" button
     .whileTrue(m_algaeSubsystem.reverseIntakeCommand()); // Runs the intake in reverse
 
-    //coral controls
+
+
+
+    //coral/elevator controls
     new JoystickButton(m_operatorController, 3) // "X" button
     .whileTrue(m_coralSubSystem.runIntakeCommand()); // Runs the intake forward
     
-
-new JoystickButton(m_operatorController, 4) // "Y" button
+    new JoystickButton(m_operatorController, 4) // "Y" button
     .whileTrue(m_coralSubSystem.reverseIntakeCommand()); // Runs the intake in reverse
-
-
+    
     // Elevator controls
-    new JoystickButton(m_operatorController, 5) // Left bumper
-        .whileTrue(m_coralSubSystem.setSetpointCommand(CoralSubsystem.Setpoint.kLevel1)); // Move to Level 1
-
-    new JoystickButton(m_operatorController, 6) // Right bumper
-        .whileTrue(m_coralSubSystem.setSetpointCommand(CoralSubsystem.Setpoint.kLevel2)); // Move to Level 2
-
-    new JoystickButton(m_operatorController, 7) // Back button
-        .whileTrue(m_coralSubSystem.setSetpointCommand(CoralSubsystem.Setpoint.kLevel3)); // Move to Level 3
-
-        new JoystickButton(m_operatorController, 8) // Start button
-        .whileTrue(m_coralSubSystem.setSetpointCommand(CoralSubsystem.Setpoint.kLevel4)); // Move to Level 4
+    // Bind D-pad up to increment the setpoint
+    new POVButton(m_operatorController, 0) // D-pad up
+    .whileTrue(m_coralSubSystem.incrementSetpointCommand());
+    // Bind D-pad down to decrement the setpoint
+    new POVButton(m_operatorController, 180) // D-pad down
+    .whileTrue(m_coralSubSystem.decrementSetpointCommand());
 
 
+
+
+
+
+    
         
+  
     // Configure default commands
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
@@ -113,7 +116,7 @@ new JoystickButton(m_operatorController, 4) // "Y" button
                 true),
             m_robotDrive));
 
-            // Set the ball intake to in/out when not running based on internal state
+           //Set the ball intake to in/out when not running based on internal state
             m_algaeSubsystem.setDefaultCommand(m_algaeSubsystem.idleCommand());
   }
 

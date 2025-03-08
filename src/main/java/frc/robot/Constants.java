@@ -31,17 +31,16 @@ public final class Constants {
     public static final int kArmMotorCanId = 14;
     public static final int kIntakeMotorCanId = 15;
     
-
     public static final class ElevatorSetpoints {
       public static final int kFeederStation = 0;
       public static final int kLevel1 = 0;
-      public static final int kLevel2 = 0;
+      public static final int kLevel2 = 50;
       public static final int kLevel3 = 100;
       public static final int kLevel4 = 150;
     }
 
     public static final class ArmSetpoints {
-      public static final double kFeederStation = 33;
+      public static final double kFeederStation = 66;
       public static final double kLevel1 = 0;
       public static final double kLevel2 = 2;
       public static final double kLevel3 = 2;
@@ -58,19 +57,23 @@ public final class Constants {
      public static final int kIntakeMotorCanId = 13;
     public static final int kPivotMotorCanId = 12;
 
-    public static final class ArmSetpoints {
-      public static final double kStow = 12.5; //18.5 is original
-      public static final double kHold = 6.5; //11..5
-      public static final double kDown = 0;
+    public static final class ArmSetpoints1 {
+      public static final double kStow = 3.489; //18.5 is original
+      public static final double kHold = 0; //11..5
+      public static final double kDown = -29.425;
     }
 
-    public static final class IntakeSetpoints {
-      public static final double kForward = 1;//.5
-      public static final double kReverse = 1;//.5
-      public static final double kHold = 0.50;//.25
+    public static final class IntakeSetpoints1 {
+      public static final double kForward = .5;//.5
+      public static final double kReverse = .5;//.5
+      public static final double kHold = 0.2;//.25
     }
      
   }
+
+
+
+
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds

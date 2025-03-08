@@ -1,9 +1,6 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.sim.SparkFlexSim;
-import com.revrobotics.sim.SparkLimitSwitchSim;
-import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -11,14 +8,7 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.simulation.ElevatorSim;
-import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,7 +17,7 @@ import frc.robot.Constants.CoralSubsystemConstants;
 import frc.robot.Constants.CoralSubsystemConstants.ArmSetpoints;
 import frc.robot.Constants.CoralSubsystemConstants.ElevatorSetpoints;
 import frc.robot.Constants.CoralSubsystemConstants.IntakeSetpoints;
-import frc.robot.Constants.SimulationRobotConstants;
+
 
 public class CoralSubsystem extends SubsystemBase {
    //Subsystem-wide setpoints
@@ -38,20 +28,16 @@ public class CoralSubsystem extends SubsystemBase {
     kLevel3,
     kLevel4;
   }
-
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so we also need to
   // initialize the closed loop controller and encoder.
-  private SparkMax armMotor =
-      new SparkMax(CoralSubsystemConstants.kArmMotorCanId, MotorType.kBrushless);
+  private SparkMax armMotor = new SparkMax(CoralSubsystemConstants.kArmMotorCanId, MotorType.kBrushless);
   private SparkClosedLoopController armController = armMotor.getClosedLoopController();
   private RelativeEncoder armEncoder = armMotor.getEncoder();
 
   // Initialize elevator SPARK. We will use MAXMotion position control for the elevator, so we also
   // need to initialize the closed loop controller and encoder.
-  private SparkFlex elevatorMotor =
-      new SparkFlex(CoralSubsystemConstants.kElevatorMotorCanId, MotorType.kBrushless);
-  private SparkClosedLoopController elevatorClosedLoopController =
-      elevatorMotor.getClosedLoopController();
+  private SparkFlex elevatorMotor =new SparkFlex(CoralSubsystemConstants.kElevatorMotorCanId, MotorType.kBrushless);
+  private SparkClosedLoopController elevatorClosedLoopController = elevatorMotor.getClosedLoopController();
   private RelativeEncoder elevatorEncoder = elevatorMotor.getEncoder();
  
   // Initialize intake SPARK. We will use open loop control for this so we don't need a closed loop
@@ -59,61 +45,18 @@ public class CoralSubsystem extends SubsystemBase {
   private SparkMax intakeMotor =
       new SparkMax(CoralSubsystemConstants.kIntakeMotorCanId, MotorType.kBrushless);
 
+
+
+
   // Member variables for subsystem state management
   private boolean wasResetByButton = false;
   private boolean wasResetByLimit = false;
   private double armCurrentTarget = ArmSetpoints.kFeederStation;
   private double elevatorCurrentTarget = ElevatorSetpoints.kFeederStation;
+  private Setpoint currentSetpoint = Setpoint.kFeederStation;
 
-  // Simulation setup and variables
-  private DCMotor elevatorMotorModel = DCMotor.getNeoVortex(1);
-  private SparkFlexSim elevatorMotorSim;
-  private SparkLimitSwitchSim elevatorLimitSwitchSim;
-  private final ElevatorSim m_elevatorSim =
-      new ElevatorSim(
-          elevatorMotorModel,
-          SimulationRobotConstants.kElevatorGearing,
-          SimulationRobotConstants.kCarriageMass,
-          SimulationRobotConstants.kElevatorDrumRadius,
-          SimulationRobotConstants.kMinElevatorHeightMeters,
-          SimulationRobotConstants.kMaxElevatorHeightMeters,
-          true,
-          SimulationRobotConstants.kMinElevatorHeightMeters,
-          0.0,
-          0.0);
 
-  private DCMotor armMotorModel = DCMotor.getNEO(1);
-  private SparkMaxSim armMotorSim;
-  private final SingleJointedArmSim m_armSim =
-      new SingleJointedArmSim(
-          armMotorModel,
-          SimulationRobotConstants.kArmReduction,
-          SingleJointedArmSim.estimateMOI(
-              SimulationRobotConstants.kArmLength, SimulationRobotConstants.kArmMass),
-          SimulationRobotConstants.kArmLength,
-          SimulationRobotConstants.kMinAngleRads,
-          SimulationRobotConstants.kMaxAngleRads,
-          true,
-          SimulationRobotConstants.kMinAngleRads,
-          0.0,
-          0.0);
 
-  // Mechanism2d setup for subsystem
-  private final Mechanism2d m_mech2d = new Mechanism2d(50, 50);
-  private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("ElevatorArm Root", 25, 0);
-  private final MechanismLigament2d m_elevatorMech2d =
-      m_mech2dRoot.append(
-          new MechanismLigament2d(
-              "Elevator",
-              SimulationRobotConstants.kMinElevatorHeightMeters
-                  * SimulationRobotConstants.kPixelsPerMeter,
-              90));
-  private final MechanismLigament2d m_armMech2d =
-      m_elevatorMech2d.append(
-          new MechanismLigament2d(
-              "Arm",
-              SimulationRobotConstants.kArmLength * SimulationRobotConstants.kPixelsPerMeter,
-              180 - Units.radiansToDegrees(SimulationRobotConstants.kMinAngleRads) - 90));
 
   public CoralSubsystem() {
    
@@ -139,17 +82,17 @@ public class CoralSubsystem extends SubsystemBase {
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
-    // Display mechanism2d
-    SmartDashboard.putData("Coral Subsystem", m_mech2d);
+
+
+
+
 
     // Zero arm and elevator encoders on initialization
     armEncoder.setPosition(0);
     elevatorEncoder.setPosition(0);
 
-    // Initialize simulation values
-    elevatorMotorSim = new SparkFlexSim(elevatorMotor, elevatorMotorModel);
-    elevatorLimitSwitchSim = new SparkLimitSwitchSim(elevatorMotor, false);
-    armMotorSim = new SparkMaxSim(armMotor, armMotorModel);
+
+
   }
 
   /**
@@ -159,12 +102,13 @@ public class CoralSubsystem extends SubsystemBase {
    */
   private void moveToSetpoint() {
     armController.setReference(armCurrentTarget, ControlType.kMAXMotionPositionControl);
-    elevatorClosedLoopController.setReference(
-        elevatorCurrentTarget, ControlType.kMAXMotionPositionControl);
+    elevatorClosedLoopController.setReference(elevatorCurrentTarget, ControlType.kMAXMotionPositionControl);
   }
 
-  // Zero the elevator encoder when the limit switch is pressed. 
 
+
+
+  // Zero the elevator encoder when the limit switch is pressed. 
   private void zeroElevatorOnLimitSwitch() {
     if (!wasResetByLimit && elevatorMotor.getReverseLimitSwitch().isPressed()) {
       // Zero the encoder only when the limit switch is switches from "unpressed" to "pressed" to
@@ -177,7 +121,6 @@ public class CoralSubsystem extends SubsystemBase {
   }
 
   // Zero the arm and elevator encoders when the user button is pressed on the roboRIO. *
-   
   private void zeroOnUserButton() {
     if (!wasResetByButton && RobotController.getUserButton()) {
       // Zero the encoders only when button switches from "unpressed" to "pressed" to prevent
@@ -190,10 +133,15 @@ public class CoralSubsystem extends SubsystemBase {
     }
   }
 
+
+
+
+
   // Set the intake motor power in the range of [-1, 1]. 
   private void setIntakePower(double power) {
     intakeMotor.set(power);
   }
+
 
   
   /**
@@ -205,28 +153,109 @@ public class CoralSubsystem extends SubsystemBase {
         () -> {
           switch (setpoint) {
             case kFeederStation:
-              armCurrentTarget = ArmSetpoints.kFeederStation;
               elevatorCurrentTarget = ElevatorSetpoints.kFeederStation;
+              armCurrentTarget = ArmSetpoints.kFeederStation;
               break;
+
+              
             case kLevel1:
-              armCurrentTarget = ArmSetpoints.kLevel1;
               elevatorCurrentTarget = ElevatorSetpoints.kLevel1;
+              armCurrentTarget = ArmSetpoints.kLevel1;
               break;
             case kLevel2:
-              armCurrentTarget = ArmSetpoints.kLevel2;
               elevatorCurrentTarget = ElevatorSetpoints.kLevel2;
+              armCurrentTarget = ArmSetpoints.kLevel2;
               break;
             case kLevel3:
-              armCurrentTarget = ArmSetpoints.kLevel3;
               elevatorCurrentTarget = ElevatorSetpoints.kLevel3;
+              armCurrentTarget = ArmSetpoints.kLevel3;
               break;
             case kLevel4:
-              armCurrentTarget = ArmSetpoints.kLevel4;
               elevatorCurrentTarget = ElevatorSetpoints.kLevel4;
+              armCurrentTarget = ArmSetpoints.kLevel4;
               break;
           }
         });
   }
+
+
+
+  private void setSetpoint(Setpoint setpoint) {
+    switch (setpoint) {
+        case kFeederStation:
+            elevatorCurrentTarget = ElevatorSetpoints.kFeederStation;
+            armCurrentTarget = ArmSetpoints.kFeederStation;
+            break;
+        case kLevel1:
+            elevatorCurrentTarget = ElevatorSetpoints.kLevel1;
+            armCurrentTarget = ArmSetpoints.kLevel1;
+            break;
+        case kLevel2:
+            elevatorCurrentTarget = ElevatorSetpoints.kLevel2;
+            armCurrentTarget = ArmSetpoints.kLevel2;
+            break;
+        case kLevel3:
+            elevatorCurrentTarget = ElevatorSetpoints.kLevel3;
+            armCurrentTarget = ArmSetpoints.kLevel3;
+            break;
+        case kLevel4:
+            elevatorCurrentTarget = ElevatorSetpoints.kLevel4;
+            armCurrentTarget = ArmSetpoints.kLevel4;
+            break;
+    }
+}
+
+
+
+  public Command incrementSetpointCommand() {
+    return this.runOnce(
+        () -> {
+            switch (currentSetpoint) {
+                case kFeederStation:
+                    currentSetpoint = Setpoint.kLevel1;
+                    break;
+                case kLevel1:
+                    currentSetpoint = Setpoint.kLevel2;
+                    break;
+                case kLevel2:
+                    currentSetpoint = Setpoint.kLevel3;
+                    break;
+                case kLevel3:
+                    currentSetpoint = Setpoint.kLevel4;
+                    break;
+                case kLevel4:
+                    // Already at the highest setpoint, do nothing or wrap around
+                    break;
+            }
+            setSetpoint(currentSetpoint);
+        });
+}
+
+
+public Command decrementSetpointCommand() {
+  return this.runOnce(
+      () -> {
+          switch (currentSetpoint) {
+              case kFeederStation:
+                  // Already at the lowest setpoint, do nothing or wrap around
+                  break;
+              case kLevel1:
+                  currentSetpoint = Setpoint.kFeederStation;
+                  break;
+              case kLevel2:
+                  currentSetpoint = Setpoint.kLevel1;
+                  break;
+              case kLevel3:
+                  currentSetpoint = Setpoint.kLevel2;
+                  break;
+              case kLevel4:
+                  currentSetpoint = Setpoint.kLevel3;
+                  break;
+          }
+          setSetpoint(currentSetpoint);
+      });
+}
+
 
   /**
    * Command to run the intake motor. When the command is interrupted, e.g. the button is released,
@@ -247,6 +276,9 @@ public class CoralSubsystem extends SubsystemBase {
         () -> this.setIntakePower(IntakeSetpoints.kReverse), () -> this.setIntakePower(0.0));
   }
 
+
+
+
   @Override
   public void periodic() {
     moveToSetpoint();
@@ -259,57 +291,7 @@ public class CoralSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Coral/Elevator/Target Position", elevatorCurrentTarget);
     SmartDashboard.putNumber("Coral/Elevator/Actual Position", elevatorEncoder.getPosition());
     SmartDashboard.putNumber("Coral/Intake/Applied Output", intakeMotor.getAppliedOutput());
-
-    // Update mechanism2d
-    m_elevatorMech2d.setLength(
-        SimulationRobotConstants.kPixelsPerMeter * SimulationRobotConstants.kMinElevatorHeightMeters
-            + SimulationRobotConstants.kPixelsPerMeter
-                * (elevatorEncoder.getPosition() / SimulationRobotConstants.kElevatorGearing)
-                * (SimulationRobotConstants.kElevatorDrumRadius * 2.0 * Math.PI));
-    m_armMech2d.setAngle(
-        180
-            - ( // mirror the angles so they display in the correct direction
-            Units.radiansToDegrees(SimulationRobotConstants.kMinAngleRads)
-                + Units.rotationsToDegrees(
-                    armEncoder.getPosition() / SimulationRobotConstants.kArmReduction))
-            - 90 // subtract 90 degrees to account for the elevator
-        );
   }
 
-  /** Get the current drawn by each simulation physics model */
-
-  public double getSimulationCurrentDraw() {
-    return m_elevatorSim.getCurrentDrawAmps() + m_armSim.getCurrentDrawAmps();
-  }
-
-  @Override
-  public void simulationPeriodic() {
-    // In this method, we update our simulation of what our elevator is doing
-    // First, we set our "inputs" (voltages)
-    m_elevatorSim.setInput(elevatorMotor.getAppliedOutput() * RobotController.getBatteryVoltage());
-    m_armSim.setInput(armMotor.getAppliedOutput() * RobotController.getBatteryVoltage());
-
-    // Update sim limit switch
-    elevatorLimitSwitchSim.setPressed(m_elevatorSim.getPositionMeters() == 0);
-
-    // Next, we update it. The standard loop time is 20ms.
-    m_elevatorSim.update(0.020);
-    m_armSim.update(0.020);
-
-    // Iterate the elevator and arm SPARK simulations
-    elevatorMotorSim.iterate(
-        ((m_elevatorSim.getVelocityMetersPerSecond()
-                    / (SimulationRobotConstants.kElevatorDrumRadius * 2.0 * Math.PI))
-                * SimulationRobotConstants.kElevatorGearing)
-            * 60.0,
-        RobotController.getBatteryVoltage(),
-        0.02);
-    armMotorSim.iterate(
-        Units.radiansPerSecondToRotationsPerMinute(
-            m_armSim.getVelocityRadPerSec() * SimulationRobotConstants.kArmReduction),
-        RobotController.getBatteryVoltage(),
-        0.02);
-
-    // SimBattery is updated in Robot.java
-  }
+  
 }
