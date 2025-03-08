@@ -7,6 +7,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -74,7 +75,7 @@ public class AlgaeSubsystem extends SubsystemBase {
 
     // Zero arm encoder on initialization, so that means where the arm 
     //is when the code is enabled is where its "0" is.
-    armEncoder.setPosition(0);
+    armEncoder.setPosition(2);
 
 
 
@@ -125,7 +126,7 @@ public class AlgaeSubsystem extends SubsystemBase {
       setIntakePower(AlgaeSubsystemConstants.IntakeSetpoints1.kReverse);//
       setIntakePosition(AlgaeSubsystemConstants.ArmSetpoints1.kHold);
     } else if (stowWhenIdle) {
-      setIntakePower (0.0 );
+      setIntakePower (AlgaeSubsystemConstants.IntakeSetpoints1.kHold );
       setIntakePosition(AlgaeSubsystemConstants.ArmSetpoints1.kStow);
   }
   }
@@ -139,7 +140,7 @@ public class AlgaeSubsystem extends SubsystemBase {
    * <p>This will also update the idle state to hold onto the ball when this command is not running.
    */
   public Command runIntakeCommand() {
-    return this.run(
+    return this.runOnce(
         () -> {
           stowWhenIdle = false;
           isRunningIntake = true;
@@ -155,7 +156,7 @@ public class AlgaeSubsystem extends SubsystemBase {
    * <p>This will also update the idle state to stow the arm when this command is not running.
    */
   public Command reverseIntakeCommand() {
-    return this.run(
+    return this.runOnce(
         () -> {
           stowWhenIdle = false;
           isRunningIntake = false;
