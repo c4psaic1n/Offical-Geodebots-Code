@@ -9,6 +9,7 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -43,8 +44,20 @@ public class AlgaeSubsystem extends SubsystemBase {
 
 
 
+ private final Timer timer = new Timer();
+
+
+
+
   public AlgaeSubsystem() {
     
+
+
+
+
+ 
+
+
      /* Apply the configuration to the SPARKs.
      *
      * kResetSafeParameters is used to get the SPARK to a known state. This
@@ -115,8 +128,10 @@ public class AlgaeSubsystem extends SubsystemBase {
 
 
 
-
-
+ 
+  
+    
+ 
 
   public void updateIntakeState() {
     if (isRunningIntake) {  //isrunning(action) is a boolean that is from a class [rovided by the vendordeps
@@ -125,20 +140,25 @@ public class AlgaeSubsystem extends SubsystemBase {
     } else if (isReversingIntake) {
       setIntakePower(AlgaeSubsystemConstants.IntakeSetpoints1.kReverse);//
       setIntakePosition(AlgaeSubsystemConstants.ArmSetpoints1.kHold);
-    } else if (stowWhenIdle) {
-      setIntakePower (AlgaeSubsystemConstants.IntakeSetpoints1.kHold );
+    }  else if (stowWhenIdle) {
+      setIntakePower (AlgaeSubsystemConstants.IntakeSetpoints1.kForward );
       setIntakePosition(AlgaeSubsystemConstants.ArmSetpoints1.kStow);
   }
-  }
+}
+   
 
 
 
-  /**
-   * Command to run the algae intake. This will extend the arm to its "down" position and run the
-   * motor at its "forward" power to intake the ball.
-   *
-   * <p>This will also update the idle state to hold onto the ball when this command is not running.
-   */
+
+
+/**
+ * Command to run the algae intake. This will extend the arm to its "down" position and run the
+ * motor at its "forward" power to intake the ball.
+ *
+ * <p>This will also update the idle state to hold onto the ball when this command is not running.
+ */
+
+
   public Command runIntakeCommand() {
     return this.runOnce(
         () -> {
@@ -165,16 +185,6 @@ public class AlgaeSubsystem extends SubsystemBase {
         });
   }
 
-  // Command to force the subsystem into its "stow" state. 
-  public Command stowCommand() {
-    return this.runOnce(
-        () -> {
-          stowWhenIdle = true;
-          isRunningIntake = false;
-          isReversingIntake = false;
-          updateIntakeState();
-        });
-  }
 
 
   

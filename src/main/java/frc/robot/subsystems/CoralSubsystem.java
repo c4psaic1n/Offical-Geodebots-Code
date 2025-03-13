@@ -55,6 +55,7 @@ public class CoralSubsystem extends SubsystemBase {
   private double armCurrentTarget = ArmSetpoints.kFeederStation;
   private double elevatorCurrentTarget = ElevatorSetpoints.kFeederStation;
   private Setpoint currentSetpoint = Setpoint.kFeederStation;
+  public boolean isRunningElevator = false;
 
 
 
@@ -279,7 +280,15 @@ public Command decrementSetpointCommand() {
         () -> this.setIntakePower(IntakeSetpoints.kReverse), () -> this.setIntakePower(0.0));
   }
 
-
+  public Command setElevatorSpeed(double speed) {
+    isRunningElevator = true;
+    return this.run(() -> elevatorMotor.set(speed));
+  }
+  
+  public Command stopElevator() {
+    isRunningElevator = false;
+    return this.run(() -> elevatorMotor.set(0.01));
+  }
 
 
   @Override
@@ -287,6 +296,10 @@ public Command decrementSetpointCommand() {
     moveToSetpoint();
     zeroElevatorOnLimitSwitch();
     zeroOnUserButton();
+
+    /*if(!isRunningElevator){
+      elevatorMotor.set(0.3);
+    }*/
 
     // Display subsystem values
     SmartDashboard.putNumber("Coral/Arm/Target Position", armCurrentTarget);

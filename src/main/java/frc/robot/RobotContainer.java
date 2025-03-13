@@ -6,31 +6,17 @@ package frc.robot;
 
 
 
-import java.util.List;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-
 
 
 /*
@@ -92,15 +78,18 @@ public class RobotContainer {
     // Elevator controls
     // Bind D-pad up to increment the setpoint
     new POVButton(m_operatorController, 0) // D-pad up
-    .whileTrue(m_coralSubSystem.incrementSetpointCommand());
+    .whileTrue(m_coralSubSystem.setElevatorSpeed(0.8));
+
     // Bind D-pad down to decrement the setpoint
     new POVButton(m_operatorController, 180) // D-pad down
-    .whileTrue(m_coralSubSystem.decrementSetpointCommand());
+    .whileTrue(m_coralSubSystem.setElevatorSpeed(-0.5));
 
+    new POVButton(m_operatorController, 0) // D-pad up
+    .onFalse(m_coralSubSystem.stopElevator());
 
-
-
-    
+    // Bind D-pad down to decrement the setpoint
+    new POVButton(m_operatorController, 180) // D-pad down
+    .onFalse(m_coralSubSystem.stopElevator());
         
   
     // Configure default commands
@@ -142,7 +131,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(
+    /*TrajectoryConfig config = new TrajectoryConfig(
         AutoConstants.kMaxSpeedMetersPerSecond,
         AutoConstants.kMaxAccelerationMetersPerSecondSquared)
         // Add kinematics to ensure max speed is actually obeyed
@@ -178,6 +167,12 @@ public class RobotContainer {
     m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));*/
+    return new RunCommand(() -> m_robotDrive.drive(
+      -0.5,
+      0,
+      0,
+      false),
+  m_robotDrive).withTimeout(3);
   }
 }
