@@ -75,6 +75,12 @@ public class RobotContainer {
     
     new JoystickButton(m_operatorController, 4) // "Y" button
     .whileTrue(m_coralSubSystem.reverseIntakeCommand()); // Runs the intake in reverse
+
+    new JoystickButton(m_operatorController, 1) // "A" button
+    .onTrue(m_coralSubSystem.armSetpointLevel2()); // moves coral arm for lvl 2
+
+    new JoystickButton(m_operatorController, 2) // "B" button
+    .onTrue(m_coralSubSystem.armSetpointFeeder()); // moves coral arm for lvl 3
     
     // Elevator controls
     // Bind D-pad up to increment the setpoint

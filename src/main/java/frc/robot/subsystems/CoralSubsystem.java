@@ -194,7 +194,22 @@ public class CoralSubsystem extends SubsystemBase {
     });
   }
 
-         
+  public Command armSetpointLevel2() {
+    return this.run(() -> {
+      double elevatorPosition = elevatorEncoder.getPosition();
+      setIntakePosition(CoralSubsystemConstants.ArmSetpoints.kLevel2);
+      if (true) {
+        stopElevator();
+      }
+    });
+  } 
+
+  public Command armSetpointFeeder() {
+    return this.run(() -> {
+      double elevatorPosition = elevatorEncoder.getPosition();
+      setIntakePosition(CoralSubsystemConstants.ArmSetpoints.kFeederStation);
+    });
+  }    
   
 
   // Method to set the intake position
