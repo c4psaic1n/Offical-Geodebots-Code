@@ -19,6 +19,7 @@ import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 
 
+
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -59,10 +60,10 @@ public class RobotContainer {
 
 //CHANGE TO CHIEF DELPHI SUGGESTION !!!!!!!!!!!!!!
     //algae controls
-    new JoystickButton(m_operatorController, 1) // "A" button
+    new JoystickButton(m_driverController.getHID(), 1) // "A" button
     .whileTrue(m_algaeSubsystem.runIntakeCommand()); // Runs the intake forward
 
-    new JoystickButton(m_operatorController, 2) // "B" button
+    new JoystickButton(m_driverController.getHID(), 2) // "B" button
     .whileTrue(m_algaeSubsystem.reverseIntakeCommand()); // Runs the intake in reverse
 
 

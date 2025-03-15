@@ -41,10 +41,10 @@ public final class Constants {
 
     public static final class ArmSetpoints {
       public static final double kFeederStation = -10.5;
-      public static final double kLevel1 = -1;
-      public static final double kLevel2 = -1;
-      public static final double kLevel3 = -1;
-      public static final double kLevel4 = -11;
+      public static final double kLevel1 = 5;
+      public static final double kLevel2 = -5.336;
+      public static final double kLevel3 = -5.336;
+      public static final double kLevel4 = -5;
     }
 
     public static final class IntakeSetpoints {

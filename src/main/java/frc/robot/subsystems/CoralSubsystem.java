@@ -152,36 +152,7 @@ public class CoralSubsystem extends SubsystemBase {
    * Command to set the subsystem setpoint. This will set the arm and elevator to their predefined
    * positions for the given setpoint.
    */
-  public Command setSetpointCommand(Setpoint setpoint) {
-    return this.runOnce(
-        () -> {
-          switch (setpoint) {
-            case kFeederStation:
-              elevatorCurrentTarget = ElevatorSetpoints.kFeederStation;
-              armCurrentTarget = ArmSetpoints.kFeederStation;
-              break;
-
-              
-            case kLevel1:
-              elevatorCurrentTarget = ElevatorSetpoints.kLevel1;
-              armCurrentTarget = ArmSetpoints.kLevel1;
-              break;
-            case kLevel2:
-              elevatorCurrentTarget = ElevatorSetpoints.kLevel2;
-              armCurrentTarget = ArmSetpoints.kLevel2;
-              break;
-            case kLevel3:
-              elevatorCurrentTarget = ElevatorSetpoints.kLevel3;
-              armCurrentTarget = ArmSetpoints.kLevel3;
-              break;
-            case kLevel4:
-              elevatorCurrentTarget = ElevatorSetpoints.kLevel4;
-              armCurrentTarget = ArmSetpoints.kLevel4;
-              break;
-          }
-        });
-  }
-
+  
 
 
   private void setSetpoint(Setpoint setpoint) {
@@ -210,55 +181,28 @@ public class CoralSubsystem extends SubsystemBase {
 }
 
 
+  // Method to set the arm position based on the elevator position
+  public Command armSetpointCommand() {
+    return this.run(() -> {
+      double elevatorPosition = elevatorEncoder.getPosition();
 
-  public Command incrementSetpointCommand() {
-    return this.runOnce(
-        () -> {
-            switch (currentSetpoint) {
-                case kFeederStation:
-                    currentSetpoint = Setpoint.kLevel1;
-                    break;
-                case kLevel1:
-                    currentSetpoint = Setpoint.kLevel2;
-                    break;
-                case kLevel2:
-                    currentSetpoint = Setpoint.kLevel3;
-                    break;
-                case kLevel3:
-                    currentSetpoint = Setpoint.kLevel4;
-                    break;
-                case kLevel4:
-                    // Already at the highest setpoint, do nothing or wrap around
-                    break;
-            }
-            setSetpoint(currentSetpoint);
-        });
-}
+      if (elevatorPosition < CoralSubsystemConstants.ElevatorSetpoints.kLevel1) {
+        setIntakePosition(CoralSubsystemConstants.ArmSetpoints.kLevel1);
+      } else if (elevatorPosition < CoralSubsystemConstants.ElevatorSetpoints.kLevel2) {
+        setIntakePosition(CoralSubsystemConstants.ArmSetpoints.kLevel2);
+      }
+    });
+  }
 
+         
+  
 
-public Command decrementSetpointCommand() {
-  return this.runOnce(
-      () -> {
-          switch (currentSetpoint) {
-              case kFeederStation:
-                  // Already at the lowest setpoint, do nothing or wrap around
-                  break;
-              case kLevel1:
-                  currentSetpoint = Setpoint.kFeederStation;
-                  break;
-              case kLevel2:
-                  currentSetpoint = Setpoint.kLevel1;
-                  break;
-              case kLevel3:
-                  currentSetpoint = Setpoint.kLevel2;
-                  break;
-              case kLevel4:
-                  currentSetpoint = Setpoint.kLevel3;
-                  break;
-          }
-          setSetpoint(currentSetpoint);
-      });
-}
+  // Method to set the intake position
+  private void setIntakePosition(double position) {
+      // Code to set the intake position
+      armController.setReference(position, ControlType.kPosition);
+  }
+
 
 
   /**
