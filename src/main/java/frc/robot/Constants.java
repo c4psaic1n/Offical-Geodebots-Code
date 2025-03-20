@@ -59,7 +59,7 @@ public final class Constants {
 
     public static final class ArmSetpoints1 {
       public static final double kStow = -29.425; //18.5 is original
-      public static final double kHold = 0; //11..5
+      public static final double kHold = -15; //11..5
       public static final double kDown = -15.84;
     }
 

@@ -132,7 +132,7 @@ public final class Configs {
           // Set PID values for position control. We don't need to pass a closed
           // loop slot, as it will default to slot 0.
           .p(0.1)
-          .outputRange(-0.5, 0.5);
+          .outputRange(-1, 1);
 
       // Configure basic settings of the intake motor
       intakeConfig.inverted(true).idleMode(IdleMode.kBrake).smartCurrentLimit(40);
